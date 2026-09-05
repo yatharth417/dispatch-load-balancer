@@ -1,73 +1,102 @@
-Dispatch Load Balancer
+# Dispatch Load Balancer
 
-A production-ready Spring Boot microservice that solves a constrained Capacitated Vehicle Routing Problem (CVRP) variant. The service optimizes the assignment of prioritized delivery orders to a fleet of vehicles based on geographical coordinates, minimizes total travel distance using the Haversine formula, and enforces strict vehicle capacity thresholds.
+A production-ready Spring Boot microservice that solves a constrained **Capacitated Vehicle Routing Problem (CVRP)** variant. The service optimizes the assignment of prioritized delivery orders to a fleet of vehicles based on geographical coordinates, minimizes total travel distance using the **Haversine formula**, and enforces strict vehicle capacity thresholds.
 
-📌 Architecture & Design Highlights
+> **Current implementation:** Priority-based dispatch optimization with Haversine distance calculation, greedy spatial clustering, vehicle capacity enforcement, idempotent persistence, and defensive API error handling.
 
-Mathematical Routing Engine: Calculates Great-Circle distances using the spherical Haversine formula with mean Earth radius $R = 6371.0\text{ km}$.
+---
 
-Constrained Priority Allocation: Orders are prioritized in strict hierarchical order (HIGH $\rightarrow$ MEDIUM $\rightarrow$ LOW), with tie-breakers sorted by package weight descending.
+## 📌 Architecture & Design Highlights
 
-Greedy Spatial Clustering: Employs a nearest-neighbor heuristic that matches each order to the vehicle whose current route location minimizes incremental transit distance without exceeding weight limits.
+- **Mathematical Routing Engine:** Calculates Great-Circle distances using the spherical Haversine formula with mean Earth radius `R = 6371.0 km`.
 
-Idempotent Upsert Persistence: Database operations update existing entities by orderId or vehicleId to prevent duplicates and constraint violations.
+- **Constrained Priority Allocation:** Orders are prioritized in strict hierarchical order (`HIGH` → `MEDIUM` → `LOW`), with tie-breakers sorted by package weight descending.
 
-Defensive Error Handling: Standardized HTTP 400/404/500 JSON error responses via @RestControllerAdvice covering malformed JSON, out-of-range coordinates, invalid priority enums, and overcapacity.
+- **Greedy Spatial Clustering:** Employs a nearest-neighbor heuristic that matches each order to the vehicle whose current route location minimizes incremental transit distance without exceeding weight limits.
 
-Flexible Ingestion: Custom Jackson deserializers accept both object-wrapped lists ({"orders": [...]}) and raw array payloads ([...]).
+- **Idempotent Upsert Persistence:** Database operations update existing entities by `orderId` or `vehicleId` to prevent duplicates and constraint violations.
 
-🚀 Getting Started
+- **Defensive Error Handling:** Standardized HTTP `400/404/500` JSON error responses via `@RestControllerAdvice` covering malformed JSON, out-of-range coordinates, invalid priority enums, and overcapacity.
 
-Prerequisites
+- **Flexible Ingestion:** Custom Jackson deserializers accept both object-wrapped lists (`{"orders": [...]}`) and raw array payloads (`[...]`).
 
-Java Development Kit (JDK): Version 17 or higher
+> *The service is designed to remain deterministic, capacity-aware, and resilient to invalid or repeated input.*
 
-Apache Maven: Version 3.8+ (or use the included ./mvnw wrapper)
+---
 
-Run Unit & Integration Tests
+## 🚀 Getting Started
 
-Bash
+### Prerequisites
 
+| Requirement | Version |
+|---|---|
+| **Java Development Kit (JDK)** | 17 or higher |
+| **Apache Maven** | 3.8+ |
+| **Database** | H2 |
+| **Server Port** | 8080 |
+
+### Run Unit & Integration Tests
+
+```bash
 mvn clean test
+```
 
-Or using the wrapper:
+*Or using the Maven wrapper:*
 
+```bash
 ./mvnw clean test
+```
 
-Start the Application
+### Start the Application
 
+```bash
 mvn spring-boot:run
+```
 
-Or using the wrapper:
+*Or using the Maven wrapper:*
 
+```bash
 ./mvnw spring-boot:run
+```
 
-Server Port: 8080
+### Application Details
 
-Base URL: http://localhost:8080
+| Property | Value |
+|---|---|
+| **Server Port** | `8080` |
+| **Base URL** | `http://localhost:8080` |
+| **H2 Database Console** | `http://localhost:8080/h2-console` |
+| **JDBC URL** | `jdbc:h2:mem:dispatchdb` |
+| **Username** | `sa` |
+| **Password** | *(empty)* |
 
-H2 Database Console: http://localhost:8080/h2-console
+> **H2 Console:** Open [`http://localhost:8080/h2-console`](http://localhost:8080/h2-console) while the application is running.
 
-JDBC URL: jdbc:h2:mem:dispatchdb
+---
 
-Username: sa
+## 📡 API Reference & Contracts
 
-Password: (empty)
+The service exposes three primary REST endpoints for ingesting delivery orders, registering fleet vehicles, and generating the optimized dispatch plan.
 
-📡 API Reference & Contracts
-
-1. Ingest Delivery Orders
+### 1. Ingest Delivery Orders
 
 Accepts a batch of delivery orders and persists or updates them in the database.
 
-Endpoint: POST /api/dispatch/orders
+**Endpoint:**
 
-Content-Type: application/json
+```http
+POST /api/dispatch/orders
+```
 
-Request Body:
+**Content-Type:**
 
-JSON
+```http
+application/json
+```
 
+#### Request Body
+
+```json
 {
   "orders": [
     {
@@ -88,28 +117,40 @@ JSON
     }
   ]
 }
+```
 
-Success Response (HTTP 200 OK):
+#### Success Response
 
-JSON
+> **HTTP 200 OK**
 
+```json
 {
   "message": "Delivery orders accepted.",
   "status": "success"
 }
+```
 
-2. Ingest Fleet Vehicles
+---
+
+### 2. Ingest Fleet Vehicles
 
 Registers or updates available fleet vehicles and their starting locations.
 
-Endpoint: POST /api/dispatch/vehicles
+**Endpoint:**
 
-Content-Type: application/json
+```http
+POST /api/dispatch/vehicles
+```
 
-Request Body:
+**Content-Type:**
 
-JSON
+```http
+application/json
+```
 
+#### Request Body
+
+```json
 {
   "vehicles": [
     {
@@ -128,26 +169,36 @@ JSON
     }
   ]
 }
+```
 
-Success Response (HTTP 200 OK):
+#### Success Response
 
-JSON
+> **HTTP 200 OK**
 
+```json
 {
   "message": "Vehicle details accepted.",
   "status": "success"
 }
+```
 
-3. Generate Dispatch Plan
+---
+
+### 3. Generate Dispatch Plan
 
 Executes the optimization algorithm and outputs vehicle route assignments, total load, cumulative distance, and unassigned orders if capacity is exhausted.
 
-Endpoint: GET /api/dispatch/plan
+**Endpoint:**
 
-Success Response (HTTP 200 OK):
+```http
+GET /api/dispatch/plan
+```
 
-JSON
+#### Success Response
 
+> **HTTP 200 OK**
+
+```json
 {
   "dispatchPlan": [
     {
@@ -183,32 +234,120 @@ JSON
   ],
   "unassignedOrders": []
 }
+```
 
-🧮 Mathematical Formulation
+---
 
-Haversine Distance Formula
+## 🧮 Mathematical Formulation
 
-Given two points with latitude and longitude coordinates $(\phi_1, \lambda_1)$ and $(\phi_2, \lambda_2)$:
-$$\Delta \phi = \phi_2 - \phi_1, \quad \Delta \lambda = \lambda_2 - \lambda_1$$
-$$a = \sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta \lambda}{2}\right)$$
-$$c = 2 \cdot \operatorname{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)$$
-$$d = R \cdot c$$
-where $R = 6371.0\text{ km}$.
+### Haversine Distance Formula
 
-🛡️ Edge Cases & Error Handling
+Given two points with latitude and longitude coordinates `(ϕ₁, λ₁)` and `(ϕ₂, λ₂)`:
 
-Overcapacity / Unassignable Orders: If an order cannot fit within the residual capacity of any vehicle in the fleet, it is routed to the unassignedOrders collection in the response rather than failing the execution.
+$$
+\Delta \phi = \phi_2 - \phi_1,\qquad
+\Delta \lambda = \lambda_2 - \lambda_1
+$$
 
-Zero Fleet Registered: Invoking /api/dispatch/plan with no registered vehicles returns HTTP 400 Bad Request with message: "No vehicles registered in the fleet.".
+$$
+a =
+\sin^2\left(\frac{\Delta \phi}{2}\right)
++
+\cos(\phi_1)\cos(\phi_2)
+\sin^2\left(\frac{\Delta \lambda}{2}\right)
+$$
 
-Coordinate Bounds Validation: Latitudes outside $[-90, 90]$ and longitudes outside $[-180, 180]$ trigger validation errors.
+$$
+c =
+2 \cdot \mathrm{atan2}\left(\sqrt{a},\sqrt{1-a}\right)
+$$
 
-Payload Robustness: Ingest endpoints handle mixed-case priorities (high, HIGH) and accept both bare arrays and root object wrappers.
+$$
+d = R \cdot c
+$$
 
-📂 Project Structure
+where:
 
-Plaintext
+$$
+R = 6371.0\text{ km}
+$$
 
+The resulting value represents the **Great-Circle distance in kilometers** between the two geographic coordinates.
+
+---
+
+## 🧠 Dispatch Allocation Strategy
+
+Orders are processed according to a strict priority hierarchy:
+
+| Priority | Processing Order |
+|---|---:|
+| `HIGH` | 1 |
+| `MEDIUM` | 2 |
+| `LOW` | 3 |
+
+Within the same priority level, orders are sorted by **package weight in descending order**.
+
+For each order, the dispatch engine:
+
+1. Evaluates all registered vehicles.
+2. Filters out vehicles that do not have sufficient remaining capacity.
+3. Calculates the distance from each eligible vehicle's current route location to the order.
+4. Selects the vehicle with the minimum incremental distance.
+5. Assigns the order to that vehicle.
+6. Updates the vehicle's current route location and accumulated load.
+7. Places the order in `unassignedOrders` when no vehicle can accommodate it.
+
+> **Note:** The implementation uses a greedy nearest-neighbor heuristic. It is designed to provide an efficient constrained dispatch plan rather than guarantee the mathematically optimal global CVRP solution.
+
+---
+
+## 🛡️ Edge Cases & Error Handling
+
+- **Overcapacity / Unassignable Orders:** If an order cannot fit within the residual capacity of any vehicle in the fleet, it is routed to the `unassignedOrders` collection in the response rather than failing the execution.
+
+- **Zero Fleet Registered:** Invoking `/api/dispatch/plan` with no registered vehicles returns `HTTP 400 Bad Request` with message: `"No vehicles registered in the fleet."`.
+
+- **Coordinate Bounds Validation:** Latitudes outside `[-90, 90]` and longitudes outside `[-180, 180]` trigger validation errors.
+
+- **Payload Robustness:** Ingest endpoints handle mixed-case priorities (`high`, `HIGH`) and accept both bare arrays and root object wrappers.
+
+- **Malformed JSON:** Invalid JSON payloads are handled through the global exception handling layer and returned as standardized API error responses.
+
+- **Invalid Priority Values:** Unsupported priority values are rejected and converted into a standardized validation error response.
+
+- **Duplicate Orders:** Existing orders are updated using their `orderId` rather than creating duplicate records.
+
+- **Duplicate Vehicles:** Existing vehicles are updated using their `vehicleId` rather than creating duplicate records.
+
+---
+
+## 🧪 Testing
+
+The project includes unit and integration tests covering the main routing, service, and controller behaviors.
+
+Run the complete test suite using:
+
+```bash
+mvn clean test
+```
+
+### Test Coverage Areas
+
+- Haversine distance calculations
+- Dispatch service logic
+- Priority-based order allocation
+- Vehicle capacity enforcement
+- Unassigned order handling
+- Controller request/response behavior
+- Validation and error handling
+- Order and vehicle upsert behavior
+
+---
+
+## 📂 Project Structure
+
+```text
 dispatch-load-balancer/
 ├── pom.xml
 ├── README.md
@@ -216,34 +355,85 @@ dispatch-load-balancer/
 │   ├── main/
 │   │   ├── java/com/assignment/dispatch/
 │   │   │   ├── DispatchApplication.java
+│   │   │   │
 │   │   │   ├── controller/
 │   │   │   │   └── DispatchController.java
+│   │   │   │
 │   │   │   ├── dto/
 │   │   │   │   ├── ApiResponseDto.java
 │   │   │   │   ├── DispatchPlanResponseDto.java
 │   │   │   │   ├── ErrorResponse.java
 │   │   │   │   ├── OrderRequestDto.java
 │   │   │   │   └── VehicleRequestDto.java
+│   │   │   │
 │   │   │   ├── entity/
 │   │   │   │   ├── OrderEntity.java
 │   │   │   │   ├── Priority.java
 │   │   │   │   └── VehicleEntity.java
+│   │   │   │
 │   │   │   ├── exception/
 │   │   │   │   ├── DispatchException.java
 │   │   │   │   ├── GlobalExceptionHandler.java
 │   │   │   │   └── InvalidInputException.java
+│   │   │   │
 │   │   │   ├── repository/
 │   │   │   │   ├── OrderRepository.java
 │   │   │   │   └── VehicleRepository.java
+│   │   │   │
 │   │   │   ├── service/
 │   │   │   │   ├── DispatchService.java
-│   │   │   │   └── impl/DispatchServiceImpl.java
+│   │   │   │   └── impl/
+│   │   │   │       └── DispatchServiceImpl.java
+│   │   │   │
 │   │   │   └── util/
 │   │   │       └── HaversineDistanceCalculator.java
+│   │   │
 │   │   └── resources/
 │   │       └── application.yml
+│   │
 │   └── test/
 │       └── java/com/assignment/dispatch/
-│           ├── controller/DispatchControllerTest.java
-│           ├── service/DispatchServiceTest.java
-│           └── util/HaversineDistanceCalculatorTest.java
+│           ├── controller/
+│           │   └── DispatchControllerTest.java
+│           ├── service/
+│           │   └── DispatchServiceTest.java
+│           └── util/
+│               └── HaversineDistanceCalculatorTest.java
+```
+
+<details>
+<summary><strong>📁 Package Responsibilities</strong></summary>
+
+| Package | Responsibility |
+|---|---|
+| `controller` | REST API endpoints and HTTP request/response handling |
+| `dto` | Request and response data transfer objects |
+| `entity` | JPA entities and priority model |
+| `exception` | Custom exceptions and centralized error handling |
+| `repository` | Database persistence through Spring Data JPA |
+| `service` | Core dispatch and optimization logic |
+| `util` | Haversine distance calculation utilities |
+
+</details>
+
+---
+
+## 🔗 API Summary
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/dispatch/orders` | Ingest or update delivery orders |
+| `POST` | `/api/dispatch/vehicles` | Register or update fleet vehicles |
+| `GET` | `/api/dispatch/plan` | Generate the optimized dispatch plan |
+
+---
+
+## 📌 Notes
+
+- The application runs locally on **port `8080`** by default.
+- Persistence is handled using an in-memory **H2 database**.
+- The dispatch algorithm prioritizes **delivery priority first**, followed by **package weight**, and then **spatial proximity**.
+- Vehicle capacity is treated as a strict constraint.
+- Orders that cannot be assigned are returned instead of causing the entire dispatch operation to fail.
+
+> **Repository:** `dispatch-load-balancer`
