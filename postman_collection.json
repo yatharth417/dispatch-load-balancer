@@ -1,0 +1,139 @@
+{
+  "info": {
+    "name": "Dispatch Load Balancer API",
+    "_postman_id": "d8a149b5-f48e-4a11-b921-dispatch-balancer-v1",
+    "description": "Postman test suite for CVRP Vehicle Dispatch Load Balancer",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Ingest Sample Orders (Page 2 Example)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orders\": [\n    {\n      \"orderId\": \"ORD001\",\n      \"latitude\": 12.9716,\n      \"longitude\": 77.5946,\n      \"address\": \"MG Road, Bangalore, Karnataka, India\",\n      \"packageWeight\": 10,\n      \"priority\": \"HIGH\"\n    },\n    {\n      \"orderId\": \"ORD002\",\n      \"latitude\": 13.0827,\n      \"longitude\": 80.2707,\n      \"address\": \"Anna Salai, Chennai, Tamil Nadu, India\",\n      \"packageWeight\": 20,\n      \"priority\": \"MEDIUM\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/dispatch/orders",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "dispatch", "orders"]
+        }
+      }
+    },
+    {
+      "name": "2. Ingest Sample Vehicles (Page 2 Example)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vehicles\": [\n    {\n      \"vehicleId\": \"VEH001\",\n      \"capacity\": 100,\n      \"currentLatitude\": 12.9716,\n      \"currentLongitude\": 77.6413,\n      \"currentAddress\": \"Indiranagar, Bangalore, Karnataka, India\"\n    },\n    {\n      \"vehicleId\": \"VEH002\",\n      \"capacity\": 150,\n      \"currentLatitude\": 13.0674,\n      \"currentLongitude\": 80.2376,\n      \"currentAddress\": \"T Nagar, Chennai, Tamil Nadu, India\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/dispatch/vehicles",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "dispatch", "vehicles"]
+        }
+      }
+    },
+    {
+      "name": "3. Ingest Full 30 Orders (Delhi-NCR Dataset)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orders\": [\n    { \"orderId\": \"ORD001\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 15, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD002\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 10, \"priority\": \"MEDIUM\" },\n    { \"orderId\": \"ORD003\", \"latitude\": 28.7041, \"longitude\": 77.1025, \"address\": \"Karol Bagh, Delhi, India\", \"packageWeight\": 20, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD004\", \"latitude\": 28.5355, \"longitude\": 77.3910, \"address\": \"Sector 18, Noida, Uttar Pradesh, India\", \"packageWeight\": 25, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD005\", \"latitude\": 28.4595, \"longitude\": 77.0266, \"address\": \"Cyber Hub, Gurgaon, Haryana, India\", \"packageWeight\": 30, \"priority\": \"MEDIUM\" },\n    { \"orderId\": \"ORD006\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 40, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD007\", \"latitude\": 28.7041, \"longitude\": 77.1025, \"address\": \"Karol Bagh, Delhi, India\", \"packageWeight\": 20, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD008\", \"latitude\": 28.5355, \"longitude\": 77.3910, \"address\": \"Sector 18, Noida, Uttar Pradesh, India\", \"packageWeight\": 25, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD009\", \"latitude\": 28.4595, \"longitude\": 77.0266, \"address\": \"Cyber Hub, Gurgaon, Haryana, India\", \"packageWeight\": 15, \"priority\": \"MEDIUM\" },\n    { \"orderId\": \"ORD010\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 30, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD011\", \"latitude\": 28.7041, \"longitude\": 77.1025, \"address\": \"Karol Bagh, Delhi, India\", \"packageWeight\": 20, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD012\", \"latitude\": 28.5355, \"longitude\": 77.3910, \"address\": \"Sector 18, Noida, Uttar Pradesh, India\", \"packageWeight\": 10, \"priority\": \"MEDIUM\" },\n    { \"orderId\": \"ORD013\", \"latitude\": 28.4595, \"longitude\": 77.0266, \"address\": \"Cyber Hub, Gurgaon, Haryana, India\", \"packageWeight\": 25, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD014\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 15, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD015\", \"latitude\": 28.7041, \"longitude\": 77.1025, \"address\": \"Karol Bagh, Delhi, India\", \"packageWeight\": 20, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD016\", \"latitude\": 28.5355, \"longitude\": 77.3910, \"address\": \"Sector 18, Noida, Uttar Pradesh, India\", \"packageWeight\": 30, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD017\", \"latitude\": 28.4595, \"longitude\": 77.0266, \"address\": \"Cyber Hub, Gurgaon, Haryana, India\", \"packageWeight\": 15, \"priority\": \"MEDIUM\" },\n    { \"orderId\": \"ORD018\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 10, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD019\", \"latitude\": 28.7041, \"longitude\": 77.1025, \"address\": \"Karol Bagh, Delhi, India\", \"packageWeight\": 20, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD020\", \"latitude\": 28.5355, \"longitude\": 77.3910, \"address\": \"Sector 18, Noida, Uttar Pradesh, India\", \"packageWeight\": 30, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD021\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 25, \"priority\": \"MEDIUM\" },\n    { \"orderId\": \"ORD022\", \"latitude\": 28.7041, \"longitude\": 77.1025, \"address\": \"Karol Bagh, Delhi, India\", \"packageWeight\": 20, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD023\", \"latitude\": 28.5355, \"longitude\": 77.3910, \"address\": \"Sector 18, Noida, Uttar Pradesh, India\", \"packageWeight\": 30, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD024\", \"latitude\": 28.4595, \"longitude\": 77.0266, \"address\": \"Cyber Hub, Gurgaon, Haryana, India\", \"packageWeight\": 15, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD025\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 20, \"priority\": \"MEDIUM\" },\n    { \"orderId\": \"ORD026\", \"latitude\": 28.7041, \"longitude\": 77.1025, \"address\": \"Karol Bagh, Delhi, India\", \"packageWeight\": 25, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD027\", \"latitude\": 28.5355, \"longitude\": 77.3910, \"address\": \"Sector 18, Noida, Uttar Pradesh, India\", \"packageWeight\": 20, \"priority\": \"MEDIUM\" },\n    { \"orderId\": \"ORD028\", \"latitude\": 28.4595, \"longitude\": 77.0266, \"address\": \"Cyber Hub, Gurgaon, Haryana, India\", \"packageWeight\": 15, \"priority\": \"LOW\" },\n    { \"orderId\": \"ORD029\", \"latitude\": 28.6139, \"longitude\": 77.2090, \"address\": \"Connaught Place, Delhi, India\", \"packageWeight\": 30, \"priority\": \"HIGH\" },\n    { \"orderId\": \"ORD030\", \"latitude\": 28.7041, \"longitude\": 77.1025, \"address\": \"Karol Bagh, Delhi, India\", \"packageWeight\": 20, \"priority\": \"LOW\" }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/dispatch/orders",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "dispatch", "orders"]
+        }
+      }
+    },
+    {
+      "name": "4. Ingest Full 5 Vehicles (Delhi-NCR Fleet)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vehicles\": [\n    { \"vehicleId\": \"VEH001\", \"capacity\": 100, \"currentLatitude\": 28.7041, \"currentLongitude\": 77.1025, \"currentAddress\": \"Karol Bagh, Delhi, India\" },\n    { \"vehicleId\": \"VEH002\", \"capacity\": 80, \"currentLatitude\": 28.5355, \"currentLongitude\": 77.3910, \"currentAddress\": \"Sector 18, Noida, Uttar Pradesh, India\" },\n    { \"vehicleId\": \"VEH003\", \"capacity\": 120, \"currentLatitude\": 28.4595, \"currentLongitude\": 77.0266, \"currentAddress\": \"Cyber Hub, Gurgaon, Haryana, India\" },\n    { \"vehicleId\": \"VEH004\", \"capacity\": 90, \"currentLatitude\": 28.6139, \"currentLongitude\": 77.2090, \"currentAddress\": \"Connaught Place, Delhi, India\" },\n    { \"vehicleId\": \"VEH005\", \"capacity\": 110, \"currentLatitude\": 28.7041, \"currentLongitude\": 77.1025, \"currentAddress\": \"Karol Bagh, Delhi, India\" }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/dispatch/vehicles",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "dispatch", "vehicles"]
+        }
+      }
+    },
+    {
+      "name": "5. Retrieve Dispatch Plan",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/dispatch/plan",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "dispatch", "plan"]
+        }
+      }
+    },
+    {
+      "name": "6. Error Case - Out of Bounds Latitude (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orders\": [\n    {\n      \"orderId\": \"ORD_ERR\",\n      \"latitude\": 195.0,\n      \"longitude\": 77.5946,\n      \"address\": \"Invalid Latitude\",\n      \"packageWeight\": 10,\n      \"priority\": \"HIGH\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/dispatch/orders",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "dispatch", "orders"]
+        }
+      }
+    }
+  ]
+}
