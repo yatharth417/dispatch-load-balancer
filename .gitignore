@@ -1,0 +1,54 @@
+# Compiled class files and build artifacts
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+
+# Log files
+*.log
+logs/
+
+# H2 Database file dumps (if file-mode is toggled)
+*.mv.db
+*.trace.db
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Package and compression outputs
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Crash logs
+hs_err_pid*
+replay_pid*
